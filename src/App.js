@@ -1,12 +1,10 @@
 import React from 'react';
-import Categories from './components/Categories';
-import Home from './pages/Home';
+import Router from './pages/Router';
 
 function App() {
   return (
     <div>
-      <Categories />
-      <Home />
+      <Router />
     </div>
   );
 }
