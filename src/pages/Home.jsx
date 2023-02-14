@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { getProductsFromCategoryAndQuery } from '../services/api';
+import { getProductsFromCategoryAndQuery,
+  getProductsFromCategory } from '../services/api';
 import Products from '../components/Products';
+import Categories from '../components/Categories';
 
-class Home extends Component {
+class Home extends React.Component {
   state = {
     productsList: [],
     querySearch: '',
@@ -24,10 +26,17 @@ class Home extends Component {
     this.setState({ results: productData.results });
   };
 
+  handleClick = async (target) => {
+    const nameCategory = await getProductsFromCategory(target);
+    this.setState({ productsList: nameCategory.results });
+    console.log(await nameCategory);
+  };
+
   render() {
     const { productsList, results } = this.state;
     return (
       <div>
+        <Categories handleClick={ this.handleClick } />
         <input
           data-testid="query-input"
           type="text"
@@ -54,7 +63,28 @@ class Home extends Component {
               data-testid="home-initial-message"
             >
               Digite algum termo de pesquisa ou escolha uma categoria.
-            </h1>) : undefined}
+            </h1>) : (
+            productsList.map((category) => (
+              <div key={ category.id }>
+                <Link
+                  data-testid="product-detail-link"
+                  to={ `/product/${category.id}` }
+                >
+                  <li data-testid="product" key={ category.id }>
+                    <h2>{ category.title }</h2>
+                    <img src={ category.thumbnail } alt={ category.title } />
+                    <p>
+                      R$
+                      {' '}
+                      { category.price }
+                    </p>
+                  </li>
+                </Link>
+              </div>
+            )))}
+          ;
+          {'}'}
+          ;
         </div>
 
         <Link to="/cart" data-testid="shopping-cart-button">
